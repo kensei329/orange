@@ -114,6 +114,14 @@ export default function MatchModal({
           >
             後で連絡する
           </button>
+          
+          {/* ホームに戻るボタンを最下部に追加 */}
+          <button
+            onClick={onClose}
+            className="w-full py-2 bg-blue-100 text-blue-700 rounded-xl font-medium hover:bg-blue-200 transition-colors text-sm"
+          >
+            ホームに戻る
+          </button>
         </div>
 
         {/* 注意事項 */}

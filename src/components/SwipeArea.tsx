@@ -221,27 +221,6 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
             )}
           </div>
         </div>
-
-        {/* スワイプ方向インジケーター */}
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <div className={`transition-opacity duration-300 ${
-            dragOffset < -30 ? 'opacity-100' : 'opacity-30'
-          }`}>
-            <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
-              ✕
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <div className={`transition-opacity duration-300 ${
-            dragOffset > 30 ? 'opacity-100' : 'opacity-30'
-          }`}>
-            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
-              ♥
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* プロフィール詳細モーダル */}

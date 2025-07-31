@@ -60,17 +60,17 @@ export default function CoordinatorCard({
         transform: `translateX(${dragOffset}px) rotate(${cardRotation}deg)`,
       }}
     >
-      {/* 氏名・年齢・住所を1行で表示 */}
+      {/* 氏名・年齢・住所を指定形式で表示、顔写真を左上に配置 */}
       <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 border-b border-orange-200">
         <div className="flex items-center justify-between">
+          {/* 顔写真 - 左上に配置 */}
+          <div className="w-12 h-12 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md mr-3 flex-shrink-0">
+            <div className="text-xl">{coordinator.avatar}</div>
+          </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-bold text-gray-800 truncate">
-              {coordinator.name} • {coordinator.age}歳 • {coordinator.location}
+              {coordinator.name}({coordinator.age}歳){coordinator.location}
             </h2>
-          </div>
-          {/* 顔写真 - 右側に配置 */}
-          <div className="w-12 h-12 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md ml-3 flex-shrink-0">
-            <div className="text-xl">{coordinator.avatar}</div>
           </div>
         </div>
       </div>
