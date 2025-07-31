@@ -24,3 +24,64 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* モバイル最適化とスワイプ機能向上 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* スワイプカードの滑らかなアニメーション */
+.swipe-card {
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* タッチデバイスでのスクロール最適化 */
+.scrollable {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* モバイルでのタッチ操作最適化 */
+.touch-optimized {
+  touch-action: manipulation;
+}
+
+/* カード表示エリアの高さ最適化 */
+@media (max-width: 768px) {
+  .card-container {
+    height: calc(100vh - 200px);
+  }
+}
+
+/* スワイプ時のビジュアルフィードバック */
+.swipe-indicator {
+  animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* モーダルのスムーズなアニメーション */
+.modal-enter {
+  animation: modalEnter 0.3s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

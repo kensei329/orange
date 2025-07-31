@@ -1,103 +1,171 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useMemo } from 'react';
+import { Coordinator, SwipeDirection, FilterOptions } from '@/types';
+import { coordinators } from '@/data/coordinators';
+import Header from '@/components/Header';
+import SwipeArea from '@/components/SwipeArea';
+import FilterPanel from '@/components/FilterPanel';
+import MatchModal from '@/components/MatchModal';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [swipedCoordinators, setSwipedCoordinators] = useState<Set<string>>(new Set());
+  const [matches, setMatches] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [currentFilters, setCurrentFilters] = useState<FilterOptions>({});
+  const [matchedCoordinator, setMatchedCoordinator] = useState<Coordinator | null>(null);
+  const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // フィルター適用されたコーディネーターリスト
+  const filteredCoordinators = useMemo(() => {
+    return coordinators.filter(coordinator => {
+      // 既にスワイプされたコーディネーターを除外
+      if (swipedCoordinators.has(coordinator.id)) {
+        return false;
+      }
+
+      // サービスタイプフィルター
+      if (currentFilters.serviceType && currentFilters.serviceType.length > 0) {
+        if (!currentFilters.serviceType.includes(coordinator.serviceType)) {
+          return false;
+        }
+      }
+
+      // 支援メニューフィルター
+      if (currentFilters.supportMenus && currentFilters.supportMenus.length > 0) {
+        const hasMatchingMenu = currentFilters.supportMenus.some(menu => 
+          coordinator.supportMenus.includes(menu)
+        );
+        if (!hasMatchingMenu) {
+          return false;
+        }
+      }
+
+      // 対応可能時間フィルター
+      if (currentFilters.availableTimes && currentFilters.availableTimes.length > 0) {
+        const hasMatchingTime = currentFilters.availableTimes.some(time => 
+          coordinator.availableTimes.includes(time)
+        );
+        if (!hasMatchingTime) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [coordinators, swipedCoordinators, currentFilters]);
+
+  const handleSwipe = (coordinator: Coordinator, direction: SwipeDirection) => {
+    // スワイプされたコーディネーターを記録
+    setSwipedCoordinators(prev => new Set([...prev, coordinator.id]));
+
+    if (direction === 'right') {
+      // マッチング成立
+      setMatches(prev => [...prev, coordinator.id]);
+      setMatchedCoordinator(coordinator);
+      setIsMatchModalOpen(true);
+    }
+
+    // 次のカードに進む
+    setCurrentIndex(0); // フィルターされたリストの最初に戻る
+  };
+
+  const handleApplyFilter = (filters: FilterOptions) => {
+    setCurrentFilters(filters);
+    setCurrentIndex(0); // フィルター適用後は最初のカードに戻る
+  };
+
+  const hasActiveFilters = useMemo(() => {
+    return !!(
+      (currentFilters.serviceType && currentFilters.serviceType.length > 0) ||
+      (currentFilters.supportMenus && currentFilters.supportMenus.length > 0) ||
+      (currentFilters.availableTimes && currentFilters.availableTimes.length > 0)
+    );
+  }, [currentFilters]);
+
+  const handleStartChat = () => {
+    setIsMatchModalOpen(false);
+    // チャット機能の実装（将来実装）
+    alert('チャット機能は今後実装予定です');
+  };
+
+  const handleMakeCall = () => {
+    setIsMatchModalOpen(false);
+    // 電話機能の実装（将来実装）
+    alert('電話機能は今後実装予定です');
+  };
+
+  const handleCloseMatchModal = () => {
+    setIsMatchModalOpen(false);
+    setMatchedCoordinator(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* ヘッダー */}
+      <Header 
+        onFilterClick={() => setIsFilterOpen(true)}
+        hasActiveFilters={hasActiveFilters}
+      />
+
+      {/* メインコンテンツ */}
+      <main className="flex-1 flex flex-col">
+        {/* アクティブフィルター表示 */}
+        {hasActiveFilters && (
+          <div className="bg-orange-50 border-b border-orange-200 px-4 py-2">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-orange-800">
+                🔍 絞り込み条件が適用されています
+              </div>
+              <button
+                onClick={() => setCurrentFilters({})}
+                className="text-xs text-orange-600 hover:text-orange-700 font-medium"
+              >
+                クリア
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* スワイプエリア */}
+        <SwipeArea
+          coordinators={filteredCoordinators}
+          onSwipe={handleSwipe}
+          currentIndex={currentIndex}
+        />
+
+        {/* マッチ統計 */}
+        <div className="bg-white border-t border-gray-200 px-4 py-3">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              マッチ数: <span className="font-medium text-orange-600">{matches.length}</span> 件
+            </p>
+            {hasActiveFilters && (
+              <p className="text-xs text-gray-500 mt-1">
+                {filteredCoordinators.length} 件のコーディネーターが見つかりました
+              </p>
+            )}
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      {/* フィルターパネル */}
+      <FilterPanel
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        onApplyFilter={handleApplyFilter}
+        currentFilters={currentFilters}
+      />
+
+      {/* マッチモーダル */}
+      <MatchModal
+        isOpen={isMatchModalOpen}
+        coordinator={matchedCoordinator}
+        onClose={handleCloseMatchModal}
+        onStartChat={handleStartChat}
+        onMakeCall={handleMakeCall}
+      />
     </div>
   );
 }
