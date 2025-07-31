@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Coordinator, SwipeDirection } from '@/types';
 import CoordinatorCard from './CoordinatorCard';
+import ProfileDetailModal from './ProfileDetailModal';
 
 interface SwipeAreaProps {
   coordinators: Coordinator[];
@@ -16,6 +17,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
   const [currentX, setCurrentX] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const currentCoordinator = coordinators[currentIndex];
@@ -111,6 +113,14 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
     }
   }, [isDragging, startX, currentX]);
 
+  const handleShowDetail = () => {
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setIsDetailModalOpen(false);
+  };
+
   if (!currentCoordinator) {
     return (
       <div className="flex-1 flex items-center justify-center p-4">
@@ -124,112 +134,122 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
   }
 
   return (
-    <div className="relative h-full flex flex-col items-center justify-center p-4">
-      {/* スワイプヒント - 初回表示時のみ */}
-      {showSwipeHint && !isDragging && (
-        <div className="absolute top-4 left-0 right-0 z-20">
-          <div className="flex justify-between items-center px-8">
-            {/* 左スワイプヒント (スキップ) */}
-            <div className="flex flex-col items-center animate-bounce">
-              <div className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
-                👎 スキップ
+    <>
+      <div className="relative h-full flex flex-col justify-center p-4 pt-8">
+        {/* スワイプヒント - 初回表示時のみ */}
+        {showSwipeHint && !isDragging && (
+          <div className="absolute top-8 left-0 right-0 z-20">
+            <div className="flex justify-between items-center px-8">
+              {/* 左スワイプヒント (スキップ) */}
+              <div className="flex flex-col items-center animate-bounce">
+                <div className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
+                  👎 スキップ
+                </div>
+                <div className="text-red-500 text-2xl mt-1">←</div>
               </div>
-              <div className="text-red-500 text-2xl mt-1">←</div>
-            </div>
-            
-            {/* 右スワイプヒント (マッチング) */}
-            <div className="flex flex-col items-center animate-bounce" style={{ animationDelay: '0.2s' }}>
-              <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
-                👍 マッチング
+              
+              {/* 右スワイプヒント (マッチング) */}
+              <div className="flex flex-col items-center animate-bounce" style={{ animationDelay: '0.2s' }}>
+                <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
+                  👍 マッチング
+                </div>
+                <div className="text-green-500 text-2xl mt-1">→</div>
               </div>
-              <div className="text-green-500 text-2xl mt-1">→</div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* スワイプガイド - ドラッグ中 */}
-      {Math.abs(dragOffset) > 50 && (
-        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
-          <div className={`px-6 py-3 rounded-full text-white font-bold text-lg shadow-lg transition-all duration-200 ${
-            dragOffset > 0 
-              ? 'bg-green-500 animate-pulse' 
-              : 'bg-red-500 animate-pulse'
-          }`}>
-            {dragOffset > 0 ? '👍 マッチング申請' : '👎 スキップ'}
+        {/* スワイプガイド - ドラッグ中 */}
+        {Math.abs(dragOffset) > 50 && (
+          <div className="absolute top-12 left-1/2 transform -translate-x-1/2 z-20">
+            <div className={`px-6 py-3 rounded-full text-white font-bold text-lg shadow-lg transition-all duration-200 ${
+              dragOffset > 0 
+                ? 'bg-green-500 animate-pulse' 
+                : 'bg-red-500 animate-pulse'
+            }`}>
+              {dragOffset > 0 ? 'マッチング申請' : 'スキップ'}
+            </div>
           </div>
+        )}
+
+        {/* メインカード - 表示領域を最大化、ヘッダーとの間隔を調整 */}
+        <div
+          ref={cardRef}
+          className={`relative w-full max-w-sm mx-auto cursor-grab active:cursor-grabbing ${
+            showSwipeHint && !isDragging ? 'animate-wiggle' : ''
+          }`}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ 
+            touchAction: 'none',
+            height: 'calc(100vh - 300px)', // ヘッダーとフッターボタンを考慮
+            maxHeight: '650px',
+            minHeight: '500px'
+          }}
+        >
+          <CoordinatorCard
+            coordinator={currentCoordinator}
+            isDragging={isDragging}
+            dragOffset={dragOffset}
+            onShowDetail={handleShowDetail}
+          />
         </div>
-      )}
 
-      {/* メインカード - 表示領域を最大化 */}
-      <div
-        ref={cardRef}
-        className={`relative w-full max-w-sm cursor-grab active:cursor-grabbing ${
-          showSwipeHint && !isDragging ? 'animate-wiggle' : ''
-        }`}
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        style={{ 
-          touchAction: 'none',
-          height: 'calc(100vh - 260px)', // フッターボタン分の余裕を確保
-          maxHeight: '700px',
-          minHeight: '500px'
-        }}
-      >
-        <CoordinatorCard
-          coordinator={currentCoordinator}
-          isDragging={isDragging}
-          dragOffset={dragOffset}
-        />
-      </div>
-
-      {/* 次のカードプレビュー */}
-      {coordinators[currentIndex + 1] && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-          <div className="w-full max-w-sm transform scale-95 opacity-30">
-            <CoordinatorCard
-              coordinator={coordinators[currentIndex + 1]}
-            />
+        {/* 次のカードプレビュー */}
+        {coordinators[currentIndex + 1] && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+            <div className="w-full max-w-sm transform scale-95 opacity-30">
+              <CoordinatorCard
+                coordinator={coordinators[currentIndex + 1]}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* カード情報 */}
-      <div className="absolute bottom-4 left-0 right-0">
-        <div className="text-center">
-          <p className="text-sm text-gray-500 mb-2">
-            {currentIndex + 1} / {coordinators.length}
-          </p>
-          {!showSwipeHint && (
-            <p className="text-xs text-gray-400">
-              左右にスワイプするか、下のボタンをタップ
+        {/* カード情報 */}
+        <div className="absolute bottom-4 left-0 right-0">
+          <div className="text-center">
+            <p className="text-sm text-gray-500 mb-2">
+              {currentIndex + 1} / {coordinators.length}
             </p>
-          )}
+            {!showSwipeHint && (
+              <p className="text-xs text-gray-400">
+                左右にスワイプするか、下のボタンをタップ
+              </p>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* スワイプ方向インジケーター */}
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-        <div className={`transition-opacity duration-300 ${
-          dragOffset < -30 ? 'opacity-100' : 'opacity-30'
-        }`}>
-          <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
-            ✕
+        {/* スワイプ方向インジケーター */}
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <div className={`transition-opacity duration-300 ${
+            dragOffset < -30 ? 'opacity-100' : 'opacity-30'
+          }`}>
+            <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
+              ✕
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <div className={`transition-opacity duration-300 ${
+            dragOffset > 30 ? 'opacity-100' : 'opacity-30'
+          }`}>
+            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
+              ♥
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-        <div className={`transition-opacity duration-300 ${
-          dragOffset > 30 ? 'opacity-100' : 'opacity-30'
-        }`}>
-          <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg">
-            ♥
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* プロフィール詳細モーダル */}
+      <ProfileDetailModal
+        isOpen={isDetailModalOpen}
+        coordinator={currentCoordinator}
+        onClose={handleCloseDetail}
+      />
+    </>
   );
 } 

@@ -142,8 +142,8 @@ export default function Home() {
         )}
       </div>
 
-      {/* メインコンテンツ - スワイプエリア */}
-      <main className="flex-1 flex flex-col pt-[120px] pb-[140px]" style={{ height: '100vh' }}>
+      {/* メインコンテンツ - スワイプエリア（ヘッダーとの間隔を調整） */}
+      <main className="flex-1 flex flex-col pt-[100px] pb-[140px]" style={{ height: '100vh' }}>
         <div className="flex-1 overflow-hidden">
           <SwipeArea
             coordinators={filteredCoordinators}

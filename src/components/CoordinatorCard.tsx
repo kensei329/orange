@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Coordinator } from '@/types';
 
 interface CoordinatorCardProps {
@@ -8,7 +7,7 @@ interface CoordinatorCardProps {
   onSwipe?: (direction: 'left' | 'right') => void;
   isDragging?: boolean;
   dragOffset?: number;
-  onProfileDetail?: () => void;
+  onShowDetail?: () => void;
 }
 
 const getServiceTypeColor = (serviceType: string) => {
@@ -48,17 +47,10 @@ export default function CoordinatorCard({
   onSwipe, 
   isDragging = false, 
   dragOffset = 0,
-  onProfileDetail
+  onShowDetail
 }: CoordinatorCardProps) {
-  const [isDetailView, setIsDetailView] = useState(false);
-  
   const cardOpacity = isDragging ? Math.max(0.7, 1 - Math.abs(dragOffset) / 200) : 1;
   const cardRotation = isDragging ? dragOffset * 0.05 : 0;
-
-  const handleProfileDetail = () => {
-    setIsDetailView(!isDetailView);
-    onProfileDetail?.();
-  };
   
   return (
     <div 
@@ -68,54 +60,32 @@ export default function CoordinatorCard({
         transform: `translateX(${dragOffset}px) rotate(${cardRotation}deg)`,
       }}
     >
-      {/* ヘッダー部分 - 基本情報と顔写真 */}
-      <div className="relative p-4 bg-gradient-to-r from-orange-50 to-orange-100">
-        {/* 顔写真 - 右上に小さく表示 */}
-        <div className="absolute top-3 right-3 w-16 h-16 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md">
-          <div className="text-3xl">{coordinator.avatar}</div>
+      {/* 氏名を最上部に配置 */}
+      <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 border-b border-orange-200">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">{coordinator.name}</h2>
+            <p className="text-sm text-gray-600">{coordinator.age}歳 • {coordinator.location}</p>
+          </div>
+          {/* 顔写真 - 右側に配置 */}
+          <div className="w-14 h-14 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md ml-3">
+            <div className="text-2xl">{coordinator.avatar}</div>
+          </div>
         </div>
+      </div>
 
-        {/* サービスタイプタグ - 左上 */}
-        <div className="absolute top-3 left-3">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getServiceTypeColor(coordinator.serviceType)}`}>
+      {/* メインコンテンツ - スクロール不要 */}
+      <div className="flex-1 p-4 space-y-4">
+        {/* 経歴とサービスタイプ */}
+        <div className="flex items-center justify-between">
+          <p className="text-orange-600 font-medium text-sm flex-1">{coordinator.experience}</p>
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ml-2 ${getServiceTypeColor(coordinator.serviceType)}`}>
             {coordinator.serviceType}
           </span>
         </div>
 
-        {/* 基本情報 - 左側メイン */}
-        <div className="pr-20 pt-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-1">{coordinator.name}</h2>
-          <p className="text-sm text-gray-600 mb-1">{coordinator.age}歳 • {coordinator.location}</p>
-          <p className="text-orange-600 font-medium text-sm">{coordinator.experience}</p>
-        </div>
-      </div>
-
-      {/* メインコンテンツ - スクロール可能 */}
-      <div className="flex-1 p-4 overflow-y-auto scrollable">
-        {/* 趣味 */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
-            <span className="mr-2">🎨</span>趣味
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {(isDetailView ? coordinator.hobbies : coordinator.hobbies.slice(0, 3)).map((hobby, index) => (
-              <span 
-                key={index}
-                className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full"
-              >
-                {hobby}
-              </span>
-            ))}
-            {!isDetailView && coordinator.hobbies.length > 3 && (
-              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                +{coordinator.hobbies.length - 3}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* 提供可能な支援メニュー - 全て表示 */}
-        <div className="mb-4">
+        {/* 提供可能な支援メニュー */}
+        <div>
           <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
             <span className="mr-2">🤝</span>提供可能な支援
           </h3>
@@ -126,79 +96,38 @@ export default function CoordinatorCard({
                 className="flex items-center gap-2 text-xs text-gray-700 bg-green-50 px-2 py-2 rounded-lg"
               >
                 <span className="text-base">{getSupportMenuIcon(menu)}</span>
-                <span className="flex-1">{menu}</span>
+                <span className="flex-1 truncate">{menu}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 対応可能時間 - 全て表示 */}
-        <div className="mb-4">
+        {/* 対応可能時間 - 1行で多く表示 */}
+        <div>
           <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
             <span className="mr-2">⏰</span>対応可能時間
           </h3>
-          <div className="space-y-2">
+          <div className="flex flex-wrap gap-1">
             {coordinator.availableTimes.map((time, index) => (
-              <div 
+              <span 
                 key={index}
-                className="px-3 py-2 bg-blue-50 text-blue-800 text-sm rounded-lg border border-blue-200"
+                className="px-2 py-1 bg-blue-50 text-blue-800 text-xs rounded-md border border-blue-200 whitespace-nowrap"
               >
                 {time}
-              </div>
+              </span>
             ))}
           </div>
         </div>
-
-        {/* 自己紹介 */}
-        <div className="mb-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
-            <span className="mr-2">💭</span>自己紹介
-          </h3>
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {isDetailView 
-                ? coordinator.description 
-                : coordinator.description.length > 80 
-                  ? `${coordinator.description.substring(0, 80)}...` 
-                  : coordinator.description
-              }
-            </p>
-          </div>
-        </div>
-
-        {/* 詳細表示時のみ表示される追加情報 */}
-        {isDetailView && (
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
-              <span className="mr-2">📍</span>所在地詳細
-            </h3>
-            <div className="bg-yellow-50 p-3 rounded-lg">
-              <p className="text-sm text-gray-700">{coordinator.location}</p>
-              <p className="text-xs text-gray-500 mt-1">
-                ※ 実際の相談場所は、マッチング後に相談して決定いたします
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* プロフィール詳細ボタン - カード内下部 */}
+      {/* 詳細ボタン - カード内下部 */}
       <div className="p-4 border-t border-gray-100">
         <button 
-          onClick={handleProfileDetail}
-          className="w-full py-2 text-orange-600 text-sm font-medium hover:text-orange-700 transition-colors flex items-center justify-center gap-2"
+          onClick={onShowDetail}
+          className="w-full py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
         >
-          {isDetailView ? (
-            <>
-              <span>📝</span>
-              <span>基本情報に戻る</span>
-            </>
-          ) : (
-            <>
-              <span>📋</span>
-              <span>プロフィール詳細を見る</span>
-            </>
-          )}
+          <span className="text-lg">📋</span>
+          <span>詳細プロフィールを見る</span>
         </button>
       </div>
     </div>
