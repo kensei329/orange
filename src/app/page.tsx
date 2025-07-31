@@ -56,6 +56,8 @@ export default function Home() {
     });
   }, [coordinators, swipedCoordinators, currentFilters]);
 
+  const currentCoordinator = filteredCoordinators[currentIndex];
+
   const handleSwipe = (coordinator: Coordinator, direction: SwipeDirection) => {
     // スワイプされたコーディネーターを記録
     setSwipedCoordinators(prev => new Set([...prev, coordinator.id]));
@@ -69,6 +71,18 @@ export default function Home() {
 
     // 次のカードに進む
     setCurrentIndex(0); // フィルターされたリストの最初に戻る
+  };
+
+  const handleSkip = () => {
+    if (currentCoordinator) {
+      handleSwipe(currentCoordinator, 'left');
+    }
+  };
+
+  const handleMatch = () => {
+    if (currentCoordinator) {
+      handleSwipe(currentCoordinator, 'right');
+    }
   };
 
   const handleApplyFilter = (filters: FilterOptions) => {
@@ -128,9 +142,8 @@ export default function Home() {
         )}
       </div>
 
-      {/* メインコンテンツ - ヘッダー分の上マージンを追加 */}
-      <main className="flex-1 flex flex-col pt-[120px] pb-[80px]" style={{ height: '100vh' }}>
-        {/* スワイプエリア - iPhone 12 Pro最適化 */}
+      {/* メインコンテンツ - スワイプエリア */}
+      <main className="flex-1 flex flex-col pt-[120px] pb-[140px]" style={{ height: '100vh' }}>
         <div className="flex-1 overflow-hidden">
           <SwipeArea
             coordinators={filteredCoordinators}
@@ -140,18 +153,43 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 固定フッター - マッチ統計 */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-3 safe-area-pb">
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            マッチ数: <span className="font-medium text-orange-600">{matches.length}</span> 件
-          </p>
-          {hasActiveFilters && (
-            <p className="text-xs text-gray-500 mt-1">
-              {filteredCoordinators.length} 件のコーディネーターが見つかりました
+      {/* 固定フッター - アクションボタン */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 safe-area-pb">
+        {/* マッチ統計 */}
+        <div className="px-4 py-2 border-b border-gray-100">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              マッチ数: <span className="font-medium text-orange-600">{matches.length}</span> 件
             </p>
-          )}
+            {hasActiveFilters && (
+              <p className="text-xs text-gray-500">
+                {filteredCoordinators.length} 件のコーディネーターが見つかりました
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* スキップ・マッチング申請ボタン */}
+        {currentCoordinator && (
+          <div className="px-4 py-3">
+            <div className="flex gap-4">
+              <button
+                onClick={handleSkip}
+                className="flex-1 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold text-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-sm"
+              >
+                <span className="text-2xl">👎</span>
+                <span>スキップ</span>
+              </button>
+              <button
+                onClick={handleMatch}
+                className="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-bold text-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
+              >
+                <span className="text-2xl">👍</span>
+                <span>マッチング申請</span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* フィルターパネル */}

@@ -71,12 +71,6 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
     setCurrentX(0);
   };
 
-  // Mouse events
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleStart(e.clientX);
-  };
-
   // Touch events
   const handleTouchStart = (e: React.TouchEvent) => {
     handleStart(e.touches[0].clientX);
@@ -88,6 +82,12 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
 
   const handleTouchEnd = () => {
     handleEnd();
+  };
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX);
   };
 
   // Global mouse events
@@ -110,12 +110,6 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
       };
     }
   }, [isDragging, startX, currentX]);
-
-  const handleSwipeAction = (direction: SwipeDirection) => {
-    if (currentCoordinator) {
-      onSwipe(currentCoordinator, direction);
-    }
-  };
 
   if (!currentCoordinator) {
     return (
@@ -167,7 +161,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
         </div>
       )}
 
-      {/* メインカード */}
+      {/* メインカード - 表示領域を最大化 */}
       <div
         ref={cardRef}
         className={`relative w-full max-w-sm cursor-grab active:cursor-grabbing ${
@@ -179,13 +173,13 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
         onTouchEnd={handleTouchEnd}
         style={{ 
           touchAction: 'none',
-          height: 'calc(100vh - 300px)', // iPhone 12 Pro最適化
-          maxHeight: '600px'
+          height: 'calc(100vh - 260px)', // フッターボタン分の余裕を確保
+          maxHeight: '700px',
+          minHeight: '500px'
         }}
       >
         <CoordinatorCard
           coordinator={currentCoordinator}
-          onSwipe={handleSwipeAction}
           isDragging={isDragging}
           dragOffset={dragOffset}
         />
@@ -202,7 +196,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
         </div>
       )}
 
-      {/* カード情報とガイダンス */}
+      {/* カード情報 */}
       <div className="absolute bottom-4 left-0 right-0">
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-2">
@@ -210,7 +204,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
           </p>
           {!showSwipeHint && (
             <p className="text-xs text-gray-400">
-              左右にスワイプするか、ボタンをタップ
+              左右にスワイプするか、下のボタンをタップ
             </p>
           )}
         </div>
