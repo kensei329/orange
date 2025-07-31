@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍊 オレンジコネクト
 
-## Getting Started
+認知症の当事者・家族とコーディネーターをつなぐ**Tinderライクなマッチング支援アプリ**のモックアップです。
 
-First, run the development server:
+## 📱 概要
 
+オレンジコネクトは、認知症の当事者、家族、そしてコーディネーター（医療・介護・福祉などの専門家）の三者をつなぐマッチング支援ツールです。利用者の相談内容や症状、生活環境、希望支援メニュー等をもとに、最適なコーディネーターや地域資源を提案します。
+
+## ✨ 主要機能
+
+### 🔄 スワイプ型マッチング機能
+- **左スワイプ**: コーディネーターをスキップ
+- **右スワイプ**: マッチング申請（即時チャット＆電話可能）
+- マウス・タッチ両対応の直感的な操作
+
+### 👥 コーディネータープロフィール
+- 顔写真（絵文字で代替表示）
+- 基本情報（名前、年齢、趣味、経歴）
+- **サービスタイプタグ**:
+  - 🔵 スポット型
+  - 🟢 担当者固定型  
+  - 🟠 両方対応
+- **提供可能な支援メニュー**:
+  - 🛒 買い物支援
+  - 🚃 電車同行
+  - 🚶‍♀️ 外出同行
+  - 💬 単発相談
+  - 📋 継続的相談
+  - 📝 ケアプラン相談
+- 対応可能時間の表示
+
+### 🔍 絞り込み検索機能
+- サービスタイプでのフィルタリング
+- 支援メニューでの絞り込み
+- 対応可能時間での検索
+- リアルタイム検索結果の更新
+
+### 🎉 マッチング成立機能
+- マッチング成立時のポップアップ通知
+- チャット・電話機能への誘導
+- コーディネーター情報の再表示
+
+## 🛠️ 技術スタック
+
+- **フロントエンド**: Next.js 15 with TypeScript
+- **スタイリング**: Tailwind CSS
+- **デザイン**: モバイルファーストレスポンシブデザイン
+- **UI/UX**: タッチ操作最適化、スムーズなアニメーション
+
+## 🚀 セットアップ & 実行
+
+### 必要環境
+- Node.js 18以上
+- npm または yarn
+
+### インストール・実行
 ```bash
+# リポジトリのクローン
+git clone https://github.com/kensei329/orange.git
+cd orange
+
+# 依存パッケージのインストール
+npm install
+
+# 開発サーバーの起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### アクセス
+- **Local**: http://localhost:3000
+- **Network**: http://[あなたのIPアドレス]:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📱 モバイルでの確認方法
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### デスクトップブラウザ
+1. **Chrome/Edge**: F12 → デバイスツールバー（📱）→ iPhone/Android選択
+2. **Safari**: 開発者メニュー → レスポンシブデザインモード
 
-## Learn More
+### 実際のモバイルデバイス
+同じWi-Fiネットワークで `http://[あなたのIPアドレス]:3000` にアクセス
 
-To learn more about Next.js, take a look at the following resources:
+## 👥 サンプルデータ
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6人のコーディネーターが事前に登録されています：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **田中 さやか** (34歳) - 介護福祉士 8年 - 両方対応
+- **佐藤 健太** (28歳) - ソーシャルワーカー 5年 - スポット型
+- **山田 美智子** (45歳) - ケアマネジャー 12年 - 担当者固定型
+- **鈴木 太郎** (39歳) - 作業療法士 10年 - 両方対応
+- **高橋 ゆかり** (31歳) - 精神保健福祉士 6年 - スポット型
+- **中村 隆** (52歳) - 社会福祉士 20年 - 担当者固定型
 
-## Deploy on Vercel
+## 🎯 使用方法
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **スワイプ操作**: コーディネーターカードを左右にスワイプ
+2. **フィルター**: 右上のフィルターアイコンで条件絞り込み
+3. **マッチング**: 右スワイプでマッチング申請
+4. **チャット/電話**: マッチング成立後に連絡開始
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔮 今後の実装予定
+
+- ユーザー認証機能
+- リアルタイムチャット機能
+- 電話・ビデオ通話機能
+- プッシュ通知
+- ユーザープロフィール管理
+- 相談履歴管理
+- 地域・位置情報対応
+
+## 📄 ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
+
+## 🤝 コントリビューション
+
+プルリクエストや課題の報告を歓迎します！
+
+---
+
+**🍊 オレンジコネクト** - 認知症の方とご家族を、温かいサポートでつなぐアプリ
