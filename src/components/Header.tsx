@@ -7,14 +7,14 @@ interface HeaderProps {
 
 export default function Header({ onFilterClick, hasActiveFilters }: HeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200 px-4 py-3">
+    <header className="bg-white border-b border-gray-200 px-4 py-3 safe-area-pt">
       <div className="flex items-center justify-between">
         {/* ロゴ */}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">🍊</span>
           </div>
-          <h1 className="text-xl font-bold text-gray-800">オレンジコネクト</h1>
+          <h1 className="text-lg font-bold text-gray-800">オレンジコネクト</h1>
         </div>
 
         {/* ナビゲーション */}
@@ -22,7 +22,7 @@ export default function Header({ onFilterClick, hasActiveFilters }: HeaderProps)
           {/* フィルターボタン */}
           <button
             onClick={onFilterClick}
-            className={`p-2 rounded-lg transition-colors relative ${
+            className={`p-2 rounded-lg transition-colors relative touch-optimized ${
               hasActiveFilters 
                 ? 'bg-orange-100 text-orange-600' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -44,12 +44,12 @@ export default function Header({ onFilterClick, hasActiveFilters }: HeaderProps)
             
             {/* フィルター有効インジケーター */}
             {hasActiveFilters && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
             )}
           </button>
 
           {/* メニューボタン */}
-          <button className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+          <button className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors touch-optimized">
             <svg 
               className="w-5 h-5" 
               fill="none" 
