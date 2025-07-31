@@ -3,9 +3,10 @@
 interface HeaderProps {
   onFilterClick: () => void;
   hasActiveFilters: boolean;
+  onMenuClick: () => void;
 }
 
-export default function Header({ onFilterClick, hasActiveFilters }: HeaderProps) {
+export default function Header({ onFilterClick, hasActiveFilters, onMenuClick }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3 safe-area-pt">
       <div className="flex items-center justify-between">
@@ -49,7 +50,10 @@ export default function Header({ onFilterClick, hasActiveFilters }: HeaderProps)
           </button>
 
           {/* メニューボタン */}
-          <button className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors touch-optimized">
+          <button 
+            onClick={onMenuClick}
+            className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors touch-optimized"
+          >
             <svg 
               className="w-5 h-5" 
               fill="none" 

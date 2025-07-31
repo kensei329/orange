@@ -7,6 +7,9 @@ import Header from '@/components/Header';
 import SwipeArea from '@/components/SwipeArea';
 import FilterPanel from '@/components/FilterPanel';
 import MatchModal from '@/components/MatchModal';
+import MenuModal from '@/components/MenuModal';
+import MatchList from '@/components/MatchList';
+import Settings from '@/components/Settings';
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -16,6 +19,9 @@ export default function Home() {
   const [currentFilters, setCurrentFilters] = useState<FilterOptions>({});
   const [matchedCoordinator, setMatchedCoordinator] = useState<Coordinator | null>(null);
   const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMatchListOpen, setIsMatchListOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // フィルター適用されたコーディネーターリスト
   const filteredCoordinators = useMemo(() => {
@@ -57,6 +63,11 @@ export default function Home() {
   }, [coordinators, swipedCoordinators, currentFilters]);
 
   const currentCoordinator = filteredCoordinators[currentIndex];
+
+  // マッチしたコーディネーターの情報を取得
+  const matchedCoordinators = useMemo(() => {
+    return coordinators.filter(coordinator => matches.includes(coordinator.id));
+  }, [coordinators, matches]);
 
   const handleSwipe = (coordinator: Coordinator, direction: SwipeDirection) => {
     // スワイプされたコーディネーターを記録
@@ -115,6 +126,30 @@ export default function Home() {
     setMatchedCoordinator(null);
   };
 
+  const handleMenuOpen = () => {
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleMatchListOpen = () => {
+    setIsMatchListOpen(true);
+  };
+
+  const handleMatchListClose = () => {
+    setIsMatchListOpen(false);
+  };
+
+  const handleSettingsOpen = () => {
+    setIsSettingsOpen(true);
+  };
+
+  const handleSettingsClose = () => {
+    setIsSettingsOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* 固定ヘッダー */}
@@ -122,6 +157,7 @@ export default function Home() {
         <Header 
           onFilterClick={() => setIsFilterOpen(true)}
           hasActiveFilters={hasActiveFilters}
+          onMenuClick={handleMenuOpen}
         />
         
         {/* アクティブフィルター表示 */}
@@ -205,6 +241,27 @@ export default function Home() {
         onClose={handleCloseMatchModal}
         onStartChat={handleStartChat}
         onMakeCall={handleMakeCall}
+      />
+
+      {/* メニューモーダル */}
+      <MenuModal
+        isOpen={isMenuOpen}
+        onClose={handleMenuClose}
+        onMatchList={handleMatchListOpen}
+        onSettings={handleSettingsOpen}
+      />
+
+      {/* マッチング一覧 */}
+      <MatchList
+        isOpen={isMatchListOpen}
+        onClose={handleMatchListClose}
+        matches={matchedCoordinators}
+      />
+
+      {/* 設定 */}
+      <Settings
+        isOpen={isSettingsOpen}
+        onClose={handleSettingsClose}
       />
     </div>
   );
