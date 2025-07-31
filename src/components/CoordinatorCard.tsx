@@ -60,32 +60,33 @@ export default function CoordinatorCard({
         transform: `translateX(${dragOffset}px) rotate(${cardRotation}deg)`,
       }}
     >
-      {/* 氏名を最上部に配置 */}
+      {/* 氏名・年齢・住所を1行で表示 */}
       <div className="bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-3 border-b border-orange-200">
         <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 mb-1">{coordinator.name}</h2>
-            <p className="text-sm text-gray-600">{coordinator.age}歳 • {coordinator.location}</p>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-bold text-gray-800 truncate">
+              {coordinator.name} • {coordinator.age}歳 • {coordinator.location}
+            </h2>
           </div>
           {/* 顔写真 - 右側に配置 */}
-          <div className="w-14 h-14 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md ml-3">
-            <div className="text-2xl">{coordinator.avatar}</div>
+          <div className="w-12 h-12 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-md ml-3 flex-shrink-0">
+            <div className="text-xl">{coordinator.avatar}</div>
           </div>
         </div>
       </div>
 
-      {/* メインコンテンツ - スクロール不要 */}
-      <div className="flex-1 p-4 space-y-4">
+      {/* メインコンテンツ */}
+      <div className="flex-1 p-4">
         {/* 経歴とサービスタイプ */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <p className="text-orange-600 font-medium text-sm flex-1">{coordinator.experience}</p>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ml-2 ${getServiceTypeColor(coordinator.serviceType)}`}>
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ml-2 flex-shrink-0 ${getServiceTypeColor(coordinator.serviceType)}`}>
             {coordinator.serviceType}
           </span>
         </div>
 
         {/* 提供可能な支援メニュー */}
-        <div>
+        <div className="mb-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
             <span className="mr-2">🤝</span>提供可能な支援
           </h3>
@@ -102,8 +103,8 @@ export default function CoordinatorCard({
           </div>
         </div>
 
-        {/* 対応可能時間 - 1行で多く表示 */}
-        <div>
+        {/* 対応可能時間 */}
+        <div className="mb-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center">
             <span className="mr-2">⏰</span>対応可能時間
           </h3>
@@ -118,13 +119,11 @@ export default function CoordinatorCard({
             ))}
           </div>
         </div>
-      </div>
 
-      {/* 詳細ボタン - カード内下部 */}
-      <div className="p-4 border-t border-gray-100">
+        {/* 詳細ボタン - 対応時間直下に配置 */}
         <button 
           onClick={onShowDetail}
-          className="w-full py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
         >
           <span className="text-lg">📋</span>
           <span>詳細プロフィールを見る</span>

@@ -142,8 +142,8 @@ export default function Home() {
         )}
       </div>
 
-      {/* メインコンテンツ - スワイプエリア（ヘッダーとの間隔を調整） */}
-      <main className="flex-1 flex flex-col pt-[100px] pb-[140px]" style={{ height: '100vh' }}>
+      {/* メインコンテンツ - スワイプエリア（フッター縮小分カード領域拡大） */}
+      <main className="flex-1 flex flex-col pt-[100px] pb-[100px]" style={{ height: '100vh' }}>
         <div className="flex-1 overflow-hidden">
           <SwipeArea
             coordinators={filteredCoordinators}
@@ -153,10 +153,10 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 固定フッター - アクションボタン */}
+      {/* 固定フッター - アクションボタン（高さ50%に縮小） */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 safe-area-pb">
         {/* マッチ統計 */}
-        <div className="px-4 py-2 border-b border-gray-100">
+        <div className="px-4 py-1 border-b border-gray-100">
           <div className="text-center">
             <p className="text-sm text-gray-600">
               マッチ数: <span className="font-medium text-orange-600">{matches.length}</span> 件
@@ -169,23 +169,21 @@ export default function Home() {
           </div>
         </div>
 
-        {/* スキップ・マッチング申請ボタン */}
+        {/* スキップ・マッチング申請ボタン（高さを50%に縮小） */}
         {currentCoordinator && (
-          <div className="px-4 py-3">
+          <div className="px-4 py-2">
             <div className="flex gap-4">
               <button
                 onClick={handleSkip}
-                className="flex-1 py-4 bg-gray-100 text-gray-700 rounded-2xl font-bold text-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-2xl font-bold text-base hover:bg-gray-200 transition-colors flex items-center justify-center shadow-sm"
               >
-                <span className="text-2xl">👎</span>
-                <span>スキップ</span>
+                スキップ
               </button>
               <button
                 onClick={handleMatch}
-                className="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-bold text-lg hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                className="flex-1 py-2 bg-orange-500 text-white rounded-2xl font-bold text-base hover:bg-orange-600 transition-colors flex items-center justify-center shadow-sm"
               >
-                <span className="text-2xl">👍</span>
-                <span>マッチング申請</span>
+                マッチング申請
               </button>
             </div>
           </div>

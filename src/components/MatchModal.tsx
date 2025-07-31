@@ -98,16 +98,14 @@ export default function MatchModal({
             onClick={onStartChat}
             className="w-full py-3 bg-orange-500 text-white rounded-xl font-medium hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 text-sm"
           >
-            <span className="text-lg">💬</span>
-            <span>チャットを開始</span>
+            チャットを開始
           </button>
           
           <button
             onClick={onMakeCall}
             className="w-full py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-sm"
           >
-            <span className="text-lg">📞</span>
-            <span>電話をかける</span>
+            電話をかける
           </button>
           
           <button

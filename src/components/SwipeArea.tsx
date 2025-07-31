@@ -143,7 +143,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
               {/* 左スワイプヒント (スキップ) */}
               <div className="flex flex-col items-center animate-bounce">
                 <div className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
-                  👎 スキップ
+                  スキップ
                 </div>
                 <div className="text-red-500 text-2xl mt-1">←</div>
               </div>
@@ -151,7 +151,7 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
               {/* 右スワイプヒント (マッチング) */}
               <div className="flex flex-col items-center animate-bounce" style={{ animationDelay: '0.2s' }}>
                 <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-medium shadow-lg">
-                  👍 マッチング
+                  マッチング
                 </div>
                 <div className="text-green-500 text-2xl mt-1">→</div>
               </div>
@@ -184,8 +184,8 @@ export default function SwipeArea({ coordinators, onSwipe, currentIndex }: Swipe
           onTouchEnd={handleTouchEnd}
           style={{ 
             touchAction: 'none',
-            height: 'calc(100vh - 300px)', // ヘッダーとフッターボタンを考慮
-            maxHeight: '650px',
+            height: 'calc(100vh - 240px)', // フッターボタンを小さくした分、カード領域を拡大
+            maxHeight: '700px',
             minHeight: '500px'
           }}
         >
